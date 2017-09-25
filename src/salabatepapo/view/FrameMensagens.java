@@ -5,19 +5,41 @@
  */
 package salabatepapo.view;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import salabatepapo.controller.EnviarMensagem;
+import salabatepapo.controller.Mensagem;
+import salabatepapo.controller.MultCast;
+import salabatepapo.model.Usuario;
+
 /**
  *
  * @author aluno
  */
 public class FrameMensagens extends javax.swing.JFrame {
-
+    private Usuario usuario;
+    private MultCast multicast;
     /**
      * Creates new form FrameMensagnes
+     * @param usuario
+     * @param endereco
      */
-    public FrameMensagens() {
+    public FrameMensagens(Usuario usuario, String endereco) {
         initComponents();
+        this.usuario = usuario;
+        this.multicast = new MultCast();
+        EnviarMensagem enviarMensagem;
+        try {
+            this.multicast.run(endereco);
+            enviarMensagem = new EnviarMensagem(multicast.getSoket(), 50023);
+            enviarMensagem.enviar(usuario, "entrou na sala!!!");
+            this.taMensagens.setText(Mensagem.MENSAGEM);
+        
+        }   catch (Exception ex) {
+            Logger.getLogger(FrameMensagens.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,7 +51,7 @@ public class FrameMensagens extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        taMensagens = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -40,18 +62,16 @@ public class FrameMensagens extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "Mensagens", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setEnabled(false);
-        jScrollPane1.setViewportView(jTextArea1);
+        taMensagens.setColumns(20);
+        taMensagens.setRows(5);
+        taMensagens.setEnabled(false);
+        jScrollPane1.setViewportView(taMensagens);
 
         jLabel1.setText("Escreva aqui:");
 
-        jButton1.setIcon(new javax.swing.ImageIcon("/home/aluno/Documentos/Arnaldo/Sistemas Distribuidos/salabatepapo_seg/images/save.png")); // NOI18N
         jButton1.setText("Enviar");
         jButton1.setActionCommand("");
 
-        jButton2.setIcon(new javax.swing.ImageIcon("/home/aluno/Documentos/Arnaldo/Sistemas Distribuidos/salabatepapo_seg/images/open-exit-door.png")); // NOI18N
         jButton2.setText("Sair");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -87,7 +107,6 @@ public class FrameMensagens extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("/home/aluno/Documentos/Arnaldo/Sistemas Distribuidos/salabatepapo_seg/images/envelope.png")); // NOI18N
         jLabel2.setText("IFSC Messenger");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -115,41 +134,7 @@ public class FrameMensagens extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameMensagens.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameMensagens.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameMensagens.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameMensagens.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrameMensagens().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -158,7 +143,7 @@ public class FrameMensagens extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextArea taMensagens;
     // End of variables declaration//GEN-END:variables
 }
