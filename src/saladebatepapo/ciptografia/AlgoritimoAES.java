@@ -46,4 +46,6 @@ public class AlgoritimoAES implements ICriptografia{
         return new String(decripta.doFinal(mensagemCriptografada),"UTF-8");
     }
     
+    
+    
 }
