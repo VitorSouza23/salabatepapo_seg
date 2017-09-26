@@ -17,10 +17,10 @@ import saladebatepapo.ciptografia.AlgoritimoAES;
  */
 public class ReceberMensagem extends Thread {
 
-    private final MulticastSocket soket;
+    private final MulticastSocket socket;
 
-    public ReceberMensagem(MulticastSocket soket) {
-        this.soket = soket;
+    public ReceberMensagem(MulticastSocket socket) {
+        this.socket = socket;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ReceberMensagem extends Thread {
         try {
             while (true) {
                 DatagramPacket msgIn = new DatagramPacket(buffer, buffer.length);
-                soket.receive(msgIn);
+                socket.receive(msgIn);
                 String mensagemCriptografada = new String(msgIn.getData());
                 Mensagem.MENSAGEM += aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
             }

@@ -14,20 +14,21 @@ import saladebatepapo.ciptografia.AlgoritimoAES;
  *
  * @author aluno
  */
-public class EnviarMensagem{
-    private final MulticastSocket soket;
+public class EnviarMensagem {
+
+    private final MulticastSocket socket;
     private final int porta;
 
-    public EnviarMensagem(MulticastSocket soket, int porta) {
-        this.soket = soket;
+    public EnviarMensagem(MulticastSocket socket, int porta) {
+        this.socket = socket;
         this.porta = porta;
     }
 
-    public void enviar(Usuario usuario, String mensagem) throws Exception{
+    public void enviarMensagemCriptografada(Usuario usuario, String mensagem) throws Exception {
         AlgoritimoAES aes = new AlgoritimoAES();
         String mensagemFormatada = "<" + usuario.getNome() + ">: " + mensagem;
-        byte[] buffer = (byte[])aes.criptografar(mensagemFormatada, "issoEUmaCheveAES");
+        byte[] buffer = (byte[]) aes.criptografar(mensagemFormatada, "issoEUmaCheveAES");
         DatagramPacket msgOut = new DatagramPacket(buffer, buffer.length, this.porta);
-        soket.send(msgOut);
+        socket.send(msgOut);
     }
 }

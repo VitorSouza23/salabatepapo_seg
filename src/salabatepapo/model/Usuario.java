@@ -10,6 +10,7 @@ package salabatepapo.model;
  * @author aluno
  */
 public class Usuario {
+
     private String nome;
 
     public Usuario() {
@@ -31,5 +32,5 @@ public class Usuario {
      */
     public void setNome(String nome) {
         this.nome = nome;
-    }   
+    }
 }

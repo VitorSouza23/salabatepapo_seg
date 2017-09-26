@@ -14,30 +14,30 @@ import java.net.MulticastSocket;
  * @author aluno
  */
 public class MultCast {
-    private MulticastSocket soket;
-    
-    
+
+    private MulticastSocket socket;
+
     public void run(String endereco) throws Exception {
         int porta = 50023;
         InetAddress enderecoMulticast;
         enderecoMulticast = InetAddress.getByName(endereco);
-        this.soket = new MulticastSocket(porta);
-        this.soket.joinGroup(enderecoMulticast);
-        ReceberMensagem receberMensagem = new ReceberMensagem(soket);
+        this.socket = new MulticastSocket(porta);
+        this.socket.joinGroup(enderecoMulticast);
+        ReceberMensagem receberMensagem = new ReceberMensagem(socket);
         receberMensagem.start();
     }
 
     /**
      * @return the soket
      */
-    public MulticastSocket getSoket() {
-        return soket;
+    public MulticastSocket getSocket() {
+        return socket;
     }
 
     /**
-     * @param soket the soket to set
+     * @param socket the soket to set
      */
-    public void setSoket(MulticastSocket soket) {
-        this.soket = soket;
+    public void setSocket(MulticastSocket socket) {
+        this.socket = socket;
     }
 }
