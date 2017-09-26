@@ -28,10 +28,13 @@ public class EnviarMensagem {
     }
 
     public void enviarMensagemCriptografada(Usuario usuario, String mensagem) throws Exception {
+        System.out.println("[IFSC Messenger] Enviando mensagem");
         AlgoritimoAES aes = new AlgoritimoAES();
         String mensagemFormatada = "<" + usuario.getNome() + ">: " + mensagem;
         byte[] buffer = (byte[]) aes.criptografar(mensagemFormatada, "issoEUmaCheveAES");
+        //byte[] buffer = (byte[]) aes.criptografar(mensagemFormatada, "issoEUmaCheveAES");
         DatagramPacket msgOut = new DatagramPacket(buffer, buffer.length, this.enderecoGrupo, this.porta);
         socket.send(msgOut);
+        System.out.println("[IFSC Messenger] Mensagem enviada");
     }
 }

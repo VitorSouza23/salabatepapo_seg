@@ -13,7 +13,7 @@ import java.net.MulticastSocket;
  *
  * @author aluno
  */
-public class MultCast {
+public class Multicast {
 
     private MulticastSocket socket;
     private InetAddress enderecoMulticast;
@@ -26,6 +26,7 @@ public class MultCast {
         System.out.println("Conectado ao endereço " + endereco);
         ReceberMensagem receberMensagem = new ReceberMensagem(socket);
         receberMensagem.start();
+        System.out.println("[IFSC Messenger] Iniciando recebimento de mensagens.");
     }
 
     /**

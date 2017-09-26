@@ -30,11 +30,17 @@ public class ReceberMensagem extends Thread {
 
         try {
             while (true) {
+                System.out.println("[IFSC Messenger] Recebendo mensagem");
                 DatagramPacket msgIn = new DatagramPacket(buffer, buffer.length);
                 socket.receive(msgIn);
-                String mensagemCriptografada = new String(msgIn.getData());
+                byte[] mensagemCriptografada = msgIn.getData();
+                
+                //Dando problema aqui
+                byte[] mensagemConvertida = (byte[]) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
+                System.out.println("[IFSC Messenger]" + mensagemConvertida);
                 //Mensagem.MENSAGEM += new String((String) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES"));
-                System.out.println(aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES"));
+//                byte[] mensagem = (byte[]) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
+//                System.out.println(mensagem);
             }
 
         } catch (Exception ex) {

@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import salabatepapo.controller.EnviarMensagem;
 import salabatepapo.controller.Mensagem;
-import salabatepapo.controller.MultCast;
+import salabatepapo.controller.Multicast;
 import salabatepapo.model.Usuario;
 
 /**
@@ -20,7 +20,7 @@ import salabatepapo.model.Usuario;
 public class FrameMensagens extends javax.swing.JFrame {
 
     private Usuario usuario;
-    private MultCast multicast;
+    private Multicast multicast;
 
     /**
      * Creates new form FrameMensagnes
@@ -31,7 +31,7 @@ public class FrameMensagens extends javax.swing.JFrame {
     public FrameMensagens(Usuario usuario, String endereco) {
         initComponents();
         this.usuario = usuario;
-        this.multicast = new MultCast();
+        this.multicast = new Multicast();
         EnviarMensagem enviarMensagem;
         try {
             this.multicast.run(endereco);
