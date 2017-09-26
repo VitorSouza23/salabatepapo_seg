@@ -14,7 +14,8 @@ import salabatepapo.interfaces.ICriptografia;
  *
  * @author aluno
  */
-public class AlgoritimoAES implements ICriptografia{
+public class AlgoritimoAES implements ICriptografia {
+
     private String IV;
 
     public AlgoritimoAES() {
@@ -24,28 +25,25 @@ public class AlgoritimoAES implements ICriptografia{
     public AlgoritimoAES(String IV) {
         this.IV = IV;
     }
-    
-    
+
     @Override
-    public Object criptografar(Object object, Object key) throws Exception{
+    public Object criptografar(Object object, Object key) throws Exception {
         String texto = (String) object;
         String chave = (String) key;
         Cipher encripta = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
         SecretKeySpec chaveSecreta = new SecretKeySpec(chave.getBytes("UTF-8"), "AES");
-        encripta.init(Cipher.ENCRYPT_MODE, chaveSecreta,new IvParameterSpec(this.IV.getBytes("UTF-8")));
+        encripta.init(Cipher.ENCRYPT_MODE, chaveSecreta, new IvParameterSpec(this.IV.getBytes("UTF-8")));
         return encripta.doFinal(texto.getBytes("UTF-8"));
     }
 
     @Override
-    public Object descriptografar(Object objetc, Object key) throws Exception{
+    public Object descriptografar(Object object, Object key) throws Exception {
         String chave = (String) key;
-        byte[] mensagemCriptografada = (byte[]) objetc;
+        byte[] mensagemCriptografada = (byte[]) object;       
         Cipher decripta = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
         SecretKeySpec chaveSecreta = new SecretKeySpec(chave.getBytes("UTF-8"), "AES");
-        decripta.init(Cipher.DECRYPT_MODE, chaveSecreta,new IvParameterSpec(this.IV.getBytes("UTF-8")));
-        return new String(decripta.doFinal(mensagemCriptografada),"UTF-8");
+        decripta.init(Cipher.DECRYPT_MODE, chaveSecreta, new IvParameterSpec(this.IV.getBytes("UTF-8")));
+        return new String(decripta.doFinal(mensagemCriptografada), "UTF-8");
     }
-    
-    
-    
+
 }

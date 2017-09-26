@@ -16,13 +16,14 @@ import java.net.MulticastSocket;
 public class MultCast {
 
     private MulticastSocket socket;
+    private InetAddress enderecoMulticast;
 
     public void run(String endereco) throws Exception {
-        int porta = 50023;
-        InetAddress enderecoMulticast;
+        int porta = 50023;        
         enderecoMulticast = InetAddress.getByName(endereco);
         this.socket = new MulticastSocket(porta);
         this.socket.joinGroup(enderecoMulticast);
+        System.out.println("Conectado ao endereço " + endereco);
         ReceberMensagem receberMensagem = new ReceberMensagem(socket);
         receberMensagem.start();
     }
@@ -40,4 +41,10 @@ public class MultCast {
     public void setSocket(MulticastSocket socket) {
         this.socket = socket;
     }
+
+    public InetAddress getEnderecoMulticast() {
+        return enderecoMulticast;
+    }
+    
+    
 }

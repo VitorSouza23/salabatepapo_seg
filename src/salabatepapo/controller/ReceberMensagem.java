@@ -33,10 +33,12 @@ public class ReceberMensagem extends Thread {
                 DatagramPacket msgIn = new DatagramPacket(buffer, buffer.length);
                 socket.receive(msgIn);
                 String mensagemCriptografada = new String(msgIn.getData());
-                Mensagem.MENSAGEM += aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
+                //Mensagem.MENSAGEM += new String((String) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES"));
+                System.out.println(aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES"));
             }
 
         } catch (Exception ex) {
+            System.out.println("Erro: " + ex.getMessage());
             Logger.getLogger(ReceberMensagem.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -5,6 +5,7 @@
  */
 package salabatepapo.view;
 
+import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import salabatepapo.controller.EnviarMensagem;
@@ -34,7 +35,7 @@ public class FrameMensagens extends javax.swing.JFrame {
         EnviarMensagem enviarMensagem;
         try {
             this.multicast.run(endereco);
-            enviarMensagem = new EnviarMensagem(multicast.getSocket(), 50023);
+            enviarMensagem = new EnviarMensagem(multicast.getSocket(), 50023, this.multicast.getEnderecoMulticast());
             enviarMensagem.enviarMensagemCriptografada(usuario, "entrou na sala!!!");
             this.taMensagens.setText(Mensagem.MENSAGEM);
 

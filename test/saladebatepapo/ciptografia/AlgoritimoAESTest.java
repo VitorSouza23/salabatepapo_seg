@@ -16,22 +16,22 @@ import org.junit.Test;
  * @author aluno
  */
 public class AlgoritimoAESTest {
-    
+
     public AlgoritimoAESTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -41,12 +41,13 @@ public class AlgoritimoAESTest {
      */
     @Test
     public void testCriptografar() throws Exception {
+        System.out.println("Criptografando");
         String mensagem = "Olá";
         String chave = "abacaxi123456789";
         AlgoritimoAES aes = new AlgoritimoAES();
         byte[] criptografado = (byte[]) aes.criptografar(mensagem, chave);
-        System.out.println(new String(criptografado));
-        System.out.println(aes.descriptografar(criptografado, chave));
+        System.out.println("Criptografado: " + new String(criptografado));
+        System.out.println("Mensagem original: " + aes.descriptografar(criptografado, chave));
     }
 
     /**
@@ -54,7 +55,13 @@ public class AlgoritimoAESTest {
      */
     @Test
     public void testDescriptografar() throws Exception {
-        
+        System.out.println("Descriptografando");
+        String mensagem = "Olá";
+        String chave = "abacaxi123456789";
+        AlgoritimoAES aes = new AlgoritimoAES();
+        Object object = aes.criptografar(mensagem, chave);
+        System.out.println("Descriptografado: " + aes.descriptografar(object, chave));
+
     }
-    
+
 }

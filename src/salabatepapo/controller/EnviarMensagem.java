@@ -6,6 +6,7 @@
 package salabatepapo.controller;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.MulticastSocket;
 import salabatepapo.model.Usuario;
 import saladebatepapo.ciptografia.AlgoritimoAES;
@@ -18,17 +19,19 @@ public class EnviarMensagem {
 
     private final MulticastSocket socket;
     private final int porta;
+    private final InetAddress enderecoGrupo; 
 
-    public EnviarMensagem(MulticastSocket socket, int porta) {
+    public EnviarMensagem(MulticastSocket socket, int porta, InetAddress enderecoGrupo) {
         this.socket = socket;
         this.porta = porta;
+        this.enderecoGrupo = enderecoGrupo;
     }
 
     public void enviarMensagemCriptografada(Usuario usuario, String mensagem) throws Exception {
         AlgoritimoAES aes = new AlgoritimoAES();
         String mensagemFormatada = "<" + usuario.getNome() + ">: " + mensagem;
         byte[] buffer = (byte[]) aes.criptografar(mensagemFormatada, "issoEUmaCheveAES");
-        DatagramPacket msgOut = new DatagramPacket(buffer, buffer.length, this.porta);
+        DatagramPacket msgOut = new DatagramPacket(buffer, buffer.length, this.enderecoGrupo, this.porta);
         socket.send(msgOut);
     }
 }
