@@ -42,7 +42,7 @@ public class AlgoritimoAESTest {
     @Test
     public void testCriptografar() throws Exception {
         System.out.println("Criptografando");
-        String mensagem = "Olá";
+        String mensagem = "Olá Mundo estou aqui nesse lugar muito legal legal ae de mais";
         String chave = "abacaxi123456789";
         AlgoritimoAES aes = new AlgoritimoAES();
         byte[] criptografado = (byte[]) aes.criptografar(mensagem, chave);

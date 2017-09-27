@@ -5,13 +5,18 @@
  */
 package salabatepapo.view;
 
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.input.KeyCode;
 import salabatepapo.controller.EnviarMensagem;
 import salabatepapo.controller.Mensagem;
 import salabatepapo.controller.Multicast;
+import salabatepapo.interfaces.ICriptografia;
 import salabatepapo.model.Usuario;
+import saladebatepapo.ciptografia.AlgoritimoAES;
 
 /**
  *
@@ -21,6 +26,8 @@ public class FrameMensagens extends javax.swing.JFrame {
 
     private Usuario usuario;
     private Multicast multicast;
+    private ICriptografia criptografia;
+    private EnviarMensagem enviarMensagem;
 
     /**
      * Creates new form FrameMensagnes
@@ -31,17 +38,17 @@ public class FrameMensagens extends javax.swing.JFrame {
     public FrameMensagens(Usuario usuario, String endereco) {
         initComponents();
         this.usuario = usuario;
-        this.multicast = new Multicast();
-        EnviarMensagem enviarMensagem;
+        this.criptografia = new AlgoritimoAES();
+        this.multicast = new Multicast(this.criptografia);
         try {
             this.multicast.run(endereco);
-            enviarMensagem = new EnviarMensagem(multicast.getSocket(), 50023, this.multicast.getEnderecoMulticast());
-            enviarMensagem.enviarMensagemCriptografada(usuario, "entrou na sala!!!");
-            this.taMensagens.setText(Mensagem.MENSAGEM);
-
+            this.enviarMensagem = new EnviarMensagem(multicast.getSocket(), 50023, this.multicast.getEnderecoMulticast(), this.criptografia);
+            this.enviarMensagem.enviarMensagemCriptografada(usuario, "Entrou na sala");
         } catch (Exception ex) {
             Logger.getLogger(FrameMensagens.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.lbUsuario.setText(this.usuario.getNome());
+        this.lbGrupo.setText(endereco);
     }
 
     /**
@@ -60,6 +67,10 @@ public class FrameMensagens extends javax.swing.JFrame {
         tfMensagem = new javax.swing.JTextField();
         btEnviarMensagem = new javax.swing.JButton();
         btSair = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        lbUsuario = new javax.swing.JLabel();
+        lbGrupo = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -68,10 +79,17 @@ public class FrameMensagens extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "Mensagens", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 14))); // NOI18N
 
         taMensagens.setColumns(20);
+        taMensagens.setForeground(new java.awt.Color(0, 0, 153));
         taMensagens.setRows(5);
         taMensagens.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        taMensagens.setDisabledTextColor(new java.awt.Color(0, 0, 255));
         taMensagens.setEnabled(false);
         taMensagens.setInheritsPopupMenu(true);
+        taMensagens.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                taMensagensKeyPressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(taMensagens);
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
@@ -94,6 +112,21 @@ public class FrameMensagens extends javax.swing.JFrame {
         btSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/salabatepapo/icons/open-exit-door.png"))); // NOI18N
         btSair.setText("Sair");
         btSair.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSairActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Usuário:");
+
+        lbUsuario.setForeground(new java.awt.Color(0, 153, 0));
+        lbUsuario.setText("UserName");
+
+        lbGrupo.setForeground(new java.awt.Color(255, 102, 0));
+        lbGrupo.setText("idGrupo");
+
+        jLabel4.setText("Grupo:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -110,13 +143,28 @@ public class FrameMensagens extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btEnviarMensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btSair, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btSair, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbUsuario)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lbGrupo)
+                        .addGap(57, 57, 57)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(lbUsuario)
+                    .addComponent(lbGrupo)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -157,8 +205,40 @@ public class FrameMensagens extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btEnviarMensagemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEnviarMensagemActionPerformed
-        // TODO add your handling code here:
+        String mensagem = tfMensagem.getText();
+        try {
+            this.enviarMensagem.enviarMensagemCriptografada(usuario, mensagem);
+        } catch (Exception ex) {
+            Logger.getLogger(FrameMensagens.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.tfMensagem.setText("");
     }//GEN-LAST:event_btEnviarMensagemActionPerformed
+
+    private void btSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSairActionPerformed
+        try {
+            this.enviarMensagem.enviarMensagemCriptografada(usuario, "Saiu!");
+        } catch (Exception ex) {
+            Logger.getLogger(FrameMensagens.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            this.multicast.sair();
+        } catch (IOException ex) {
+            Logger.getLogger(FrameMensagens.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_btSairActionPerformed
+
+    private void taMensagensKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_taMensagensKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String mensagem = tfMensagem.getText();
+            try {
+                this.enviarMensagem.enviarMensagemCriptografada(usuario, mensagem);
+            } catch (Exception ex) {
+                Logger.getLogger(FrameMensagens.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.tfMensagem.setText("");
+        }
+    }//GEN-LAST:event_taMensagensKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -166,9 +246,13 @@ public class FrameMensagens extends javax.swing.JFrame {
     private javax.swing.JButton btSair;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea taMensagens;
+    private javax.swing.JLabel lbGrupo;
+    private javax.swing.JLabel lbUsuario;
+    public static javax.swing.JTextArea taMensagens;
     private javax.swing.JTextField tfMensagem;
     // End of variables declaration//GEN-END:variables
 }

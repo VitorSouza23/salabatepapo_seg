@@ -9,7 +9,8 @@ import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import saladebatepapo.ciptografia.AlgoritimoAES;
+import salabatepapo.interfaces.ICriptografia;
+import salabatepapo.view.FrameMensagens;
 
 /**
  *
@@ -18,14 +19,17 @@ import saladebatepapo.ciptografia.AlgoritimoAES;
 public class ReceberMensagem extends Thread {
 
     private final MulticastSocket socket;
+    private final ICriptografia cropitografia;
 
-    public ReceberMensagem(MulticastSocket socket) {
+    public ReceberMensagem(MulticastSocket socket, ICriptografia cropitografia) {
         this.socket = socket;
+        this.cropitografia = cropitografia;
     }
+    
+    
 
     @Override
     public void run() {
-        AlgoritimoAES aes = new AlgoritimoAES();
         byte[] buffer = new byte[1024];
 
         try {
@@ -35,10 +39,23 @@ public class ReceberMensagem extends Thread {
                 socket.receive(msgIn);
                 byte[] mensagemCriptografada = msgIn.getData();
                 
+                int tamanhoDaMensagem = 0;
+                for(int x = 0; x < mensagemCriptografada.length; x++){
+                    if(mensagemCriptografada[x] == 0){
+                        break;
+                    }
+                    tamanhoDaMensagem++;
+                }
+                
+                byte[] mensagemCriptografadaSemPaddin = new byte[tamanhoDaMensagem];
+                for(int x = 0; x < mensagemCriptografadaSemPaddin.length; x++){
+                    mensagemCriptografadaSemPaddin[x] = mensagemCriptografada[x];
+                }
                 //Dando problema aqui
-                byte[] mensagemConvertida = (byte[]) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
-                System.out.println("[IFSC Messenger]" + mensagemConvertida);
-                //Mensagem.MENSAGEM += new String((String) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES"));
+                String mensagemConvertida  = (String) cropitografia.descriptografar(mensagemCriptografadaSemPaddin, "abacaxi123456789");
+                System.out.println("[IFSC Messenger]" + mensagemConvertida + "\n");
+                Mensagem.MENSAGEM += mensagemConvertida;
+                FrameMensagens.taMensagens.setText(Mensagem.MENSAGEM);
 //                byte[] mensagem = (byte[]) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
 //                System.out.println(mensagem);
             }

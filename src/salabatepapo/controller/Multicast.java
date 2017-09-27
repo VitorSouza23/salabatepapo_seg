@@ -5,9 +5,11 @@
  */
 package salabatepapo.controller;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import salabatepapo.interfaces.ICriptografia;
 
 /**
  *
@@ -17,6 +19,15 @@ public class Multicast {
 
     private MulticastSocket socket;
     private InetAddress enderecoMulticast;
+    private final ICriptografia criptografia;
+
+    public Multicast(ICriptografia criptografia) {
+        this.criptografia = criptografia;
+    }
+
+   
+    
+    
 
     public void run(String endereco) throws Exception {
         int porta = 50023;        
@@ -24,7 +35,7 @@ public class Multicast {
         this.socket = new MulticastSocket(porta);
         this.socket.joinGroup(enderecoMulticast);
         System.out.println("Conectado ao endereço " + endereco);
-        ReceberMensagem receberMensagem = new ReceberMensagem(socket);
+        ReceberMensagem receberMensagem = new ReceberMensagem(socket, this.criptografia);
         receberMensagem.start();
         System.out.println("[IFSC Messenger] Iniciando recebimento de mensagens.");
     }
@@ -45,6 +56,10 @@ public class Multicast {
 
     public InetAddress getEnderecoMulticast() {
         return enderecoMulticast;
+    }
+    
+    public void sair() throws IOException{
+        this.socket.leaveGroup(this.enderecoMulticast);
     }
     
     
