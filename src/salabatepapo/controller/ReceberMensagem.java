@@ -30,13 +30,14 @@ public class ReceberMensagem extends Thread {
 
     @Override
     public void run() {
-        byte[] buffer = new byte[1024];
+        
 
         try {
             while (true) {
+                byte[] buffer = new byte[1024];
                 System.out.println("[IFSC Messenger] Recebendo mensagem");
                 DatagramPacket msgIn = new DatagramPacket(buffer, buffer.length);
-                socket.receive(msgIn);
+                this.socket.receive(msgIn);
                 byte[] mensagemCriptografada = msgIn.getData();
                 
                 int tamanhoDaMensagem = 0;
@@ -54,8 +55,8 @@ public class ReceberMensagem extends Thread {
                 //Dando problema aqui
                 String mensagemConvertida  = (String) cropitografia.descriptografar(mensagemCriptografadaSemPaddin, "abacaxi123456789");
                 System.out.println("[IFSC Messenger]" + mensagemConvertida + "\n");
-                Mensagem.MENSAGEM += mensagemConvertida;
-                FrameMensagens.taMensagens.setText(Mensagem.MENSAGEM);
+                
+                FrameMensagens.taMensagens.append(mensagemConvertida);
 //                byte[] mensagem = (byte[]) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
 //                System.out.println(mensagem);
             }
