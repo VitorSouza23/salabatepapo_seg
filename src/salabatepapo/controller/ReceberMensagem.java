@@ -52,13 +52,11 @@ public class ReceberMensagem extends Thread {
                 for(int x = 0; x < mensagemCriptografadaSemPaddin.length; x++){
                     mensagemCriptografadaSemPaddin[x] = mensagemCriptografada[x];
                 }
-                //Dando problema aqui
+                
                 String mensagemConvertida  = (String) cropitografia.descriptografar(mensagemCriptografadaSemPaddin, "abacaxi123456789");
                 System.out.println("[IFSC Messenger]" + mensagemConvertida + "\n");
                 
-                FrameMensagens.taMensagens.append(mensagemConvertida);
-//                byte[] mensagem = (byte[]) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
-//                System.out.println(mensagem);
+                FrameMensagens.taMensagens.append(mensagemConvertida + "\n");
             }
 
         } catch (Exception ex) {
