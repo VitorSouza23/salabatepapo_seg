@@ -85,15 +85,16 @@ public class FrameMensagens extends javax.swing.JFrame {
         taMensagens.setDisabledTextColor(new java.awt.Color(0, 0, 255));
         taMensagens.setEnabled(false);
         taMensagens.setInheritsPopupMenu(true);
-        taMensagens.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                taMensagensKeyPressed(evt);
-            }
-        });
         jScrollPane1.setViewportView(taMensagens);
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         jLabel1.setText("Escreva aqui:");
+
+        tfMensagem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tfMensagemKeyPressed(evt);
+            }
+        });
 
         btEnviarMensagem.setFont(new java.awt.Font("Arial", 1, 11)); // NOI18N
         btEnviarMensagem.setForeground(new java.awt.Color(51, 153, 0));
@@ -228,8 +229,8 @@ public class FrameMensagens extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btSairActionPerformed
 
-    private void taMensagensKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_taMensagensKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+    private void tfMensagemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfMensagemKeyPressed
+         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             String mensagem = tfMensagem.getText();
             try {
                 this.enviarMensagem.enviarMensagemCriptografada(usuario, mensagem);
@@ -238,7 +239,7 @@ public class FrameMensagens extends javax.swing.JFrame {
             }
             this.tfMensagem.setText("");
         }
-    }//GEN-LAST:event_taMensagensKeyPressed
+    }//GEN-LAST:event_tfMensagemKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

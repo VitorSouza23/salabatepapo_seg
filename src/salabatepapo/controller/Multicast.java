@@ -20,7 +20,7 @@ public class Multicast {
     private MulticastSocket socket;
     private InetAddress enderecoMulticast;
     private final ICriptografia criptografia;
-
+    private ReceberMensagem receberMensagem;
     public Multicast(ICriptografia criptografia) {
         this.criptografia = criptografia;
     }
@@ -35,7 +35,7 @@ public class Multicast {
         this.socket = new MulticastSocket(porta);
         this.socket.joinGroup(enderecoMulticast);
         System.out.println("Conectado ao endereço " + endereco);
-        ReceberMensagem receberMensagem = new ReceberMensagem(socket, this.criptografia);
+        this.receberMensagem = new ReceberMensagem(socket, this.criptografia);
         receberMensagem.start();
         System.out.println("[IFSC Messenger] Iniciando recebimento de mensagens.");
     }
@@ -60,6 +60,7 @@ public class Multicast {
     
     public void sair() throws IOException{
         this.socket.leaveGroup(this.enderecoMulticast);
+        this.receberMensagem.isInterrupted();
     }
     
     

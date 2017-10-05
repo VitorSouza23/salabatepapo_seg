@@ -53,10 +53,18 @@ public class ReceberMensagem extends Thread {
                     mensagemCriptografadaSemPaddin[x] = mensagemCriptografada[x];
                 }
                 //Dando problema aqui
-                String mensagemConvertida  = (String) cropitografia.descriptografar(mensagemCriptografadaSemPaddin, "abacaxi123456789");
+                String mensagemConvertida = "";
+                try{
+                    mensagemConvertida  = (String) cropitografia.descriptografar(mensagemCriptografadaSemPaddin, "abacaxi123456789");
+                }catch(Exception e){
+                    System.out.println("Error: " + e.getMessage());
+                    mensagemConvertida = "***Falha ao Descriptografar****";
+                }
+                
                 System.out.println("[IFSC Messenger]" + mensagemConvertida + "\n");
                 
-                FrameMensagens.taMensagens.append(mensagemConvertida);
+                FrameMensagens.taMensagens.append(mensagemConvertida + "\n");
+                FrameMensagens.taMensagens.setCaretPosition(FrameMensagens.taMensagens.getDocument().getLength());
 //                byte[] mensagem = (byte[]) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
 //                System.out.println(mensagem);
             }
