@@ -67,6 +67,7 @@ public class ReceberMensagem extends Thread {
                 FrameMensagens.taMensagens.setCaretPosition(FrameMensagens.taMensagens.getDocument().getLength());
 //                byte[] mensagem = (byte[]) aes.descriptografar(mensagemCriptografada, "issoEUmaCheveAES");
 //                System.out.println(mensagem);
+
             }
 
         } catch (Exception ex) {
