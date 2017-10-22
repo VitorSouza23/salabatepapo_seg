@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package saladebatepapo.ciptografia;
+package salabatepapo.criptografia;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;

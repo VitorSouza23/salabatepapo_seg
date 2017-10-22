@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import salabatepapo.interfaces.ICriptografia;
 import salabatepapo.model.Usuario;
+import salabatepapo.utils.ChaveSimetrica;
 
 /**
  *
@@ -34,7 +35,7 @@ public class EnviarMensagem {
     public void enviarMensagemCriptografada(Usuario usuario, String mensagem) throws Exception {
         System.out.println("[IFSC Messenger] Enviando mensagem");
         String mensagemFormatada = "<" + usuario.getNome() + ">: " + mensagem;
-        byte[] buffer = (byte[]) criptografia.criptografar(mensagemFormatada, "abacaxi123456789");
+        byte[] buffer = (byte[]) criptografia.criptografar(mensagemFormatada, ChaveSimetrica.CHAVE_SIMERICA);
         //byte[] buffer = (byte[]) aes.criptografar(mensagemFormatada, "issoEUmaCheveAES");
         DatagramPacket msgOut = new DatagramPacket(buffer, buffer.length, this.enderecoGrupo, this.porta);
         socket.send(msgOut);

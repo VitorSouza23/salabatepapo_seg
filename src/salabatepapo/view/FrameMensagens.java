@@ -16,7 +16,7 @@ import salabatepapo.controller.Mensagem;
 import salabatepapo.controller.Multicast;
 import salabatepapo.interfaces.ICriptografia;
 import salabatepapo.model.Usuario;
-import saladebatepapo.ciptografia.AlgoritimoAES;
+import salabatepapo.criptografia.AlgoritimoAES;
 
 /**
  *

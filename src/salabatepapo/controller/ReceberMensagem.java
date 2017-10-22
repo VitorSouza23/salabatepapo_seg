@@ -10,6 +10,7 @@ import java.net.MulticastSocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import salabatepapo.interfaces.ICriptografia;
+import salabatepapo.utils.ChaveSimetrica;
 import salabatepapo.view.FrameMensagens;
 
 /**
@@ -55,7 +56,7 @@ public class ReceberMensagem extends Thread {
                 //Dando problema aqui
                 String mensagemConvertida = "";
                 try{
-                    mensagemConvertida  = (String) cropitografia.descriptografar(mensagemCriptografadaSemPaddin, "abacaxi123456789");
+                    mensagemConvertida  = (String) cropitografia.descriptografar(mensagemCriptografadaSemPaddin, ChaveSimetrica.CHAVE_SIMERICA);
                 }catch(Exception e){
                     System.out.println("Error: " + e.getMessage());
                     mensagemConvertida = "***Falha ao Descriptografar****";

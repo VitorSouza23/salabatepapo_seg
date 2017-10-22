@@ -5,6 +5,7 @@
  */
 package saladebatepapo.ciptografia;
 
+import salabatepapo.criptografia.AlgoritimoAES;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

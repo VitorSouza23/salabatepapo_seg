@@ -6,7 +6,6 @@
 package salabatepapo.controller;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import salabatepapo.interfaces.ICriptografia;
@@ -21,6 +20,7 @@ public class Multicast {
     private InetAddress enderecoMulticast;
     private final ICriptografia criptografia;
     private ReceberMensagem receberMensagem;
+    private ConexaoServidorDeChaves conexaoServidorDeChaves;
     public Multicast(ICriptografia criptografia) {
         this.criptografia = criptografia;
     }
@@ -30,7 +30,9 @@ public class Multicast {
     
 
     public void run(String endereco) throws Exception {
-        int porta = 50023;        
+        int porta = 50023;
+        this.conexaoServidorDeChaves = new ConexaoServidorDeChaves(porta);
+        this.conexaoServidorDeChaves.requestCheveSimetrica(InetAddress.getByName("192.168.0.103"), 50003);///Mudar para os dados do servidor
         enderecoMulticast = InetAddress.getByName(endereco);
         this.socket = new MulticastSocket(porta);
         this.socket.joinGroup(enderecoMulticast);
