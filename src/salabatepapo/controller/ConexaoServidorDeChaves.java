@@ -39,16 +39,18 @@ public class ConexaoServidorDeChaves {
         if (this.criptografiaAssimetrica.verificaSeExisteChavesNoSO() == false) {
             this.criptografiaAssimetrica.gerarChaves();
         }
+        
         try {
             ObjectInputStream ois = null;
             ois = new ObjectInputStream(new FileInputStream(this.criptografiaAssimetrica.getPathChavePublica()));
             PublicKey chavePublica = (PublicKey) ois.readObject();
-            ois = new ObjectInputStream(new FileInputStream(this.criptografiaAssimetrica.getPathChavePrivada()));
-            PrivateKey chavePrivada = (PrivateKey) ois.readObject();
             
-            PacoteCliente pacoteCliente = new PacoteCliente(InetAddress.getLocalHost(), chavePublica, this.porta);
             
+            PacoteCliente pacoteCliente = new PacoteCliente(InetAddress.getByName("10.151.34.121"), chavePublica, this.porta);
             this.soket = new DatagramSocket(this.porta);
+            ThreadGetChaveSimetrica tChaveSimetrica = new ThreadGetChaveSimetrica(this.criptografiaAssimetrica, this.soket);
+            tChaveSimetrica.start();
+            
             byte[] dados;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -57,17 +59,13 @@ public class ConexaoServidorDeChaves {
             
             this.pacote = new DatagramPacket(dados, dados.length, enderecoServidorDeNomes, portaServidorDeNomes);
             this.soket.send(pacote);
-            
-            dados = new byte[1024];
-            this.pacote = new DatagramPacket(dados, dados.length);
-            this.soket.receive(pacote);
-            
-            dados = pacote.getData();
-            ByteArrayInputStream bais = new ByteArrayInputStream(dados);
-            ois = new ObjectInputStream(bais);
-            String chaveSimetrica = (String)this.criptografiaAssimetrica.descriptografar((byte[])ois.readObject(), chavePrivada);
-            ChaveSimetrica.CHAVE_SIMERICA = new String(chaveSimetrica);
-            System.out.println("Está é chave simétrica: " + ChaveSimetrica.CHAVE_SIMERICA);
+            synchronized(tChaveSimetrica){
+                try{
+                    tChaveSimetrica.wait();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
             this.soket.close();
         } catch (Exception e) {
             e.printStackTrace();
