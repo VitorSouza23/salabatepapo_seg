@@ -5,27 +5,28 @@
  */
 package salabatepapo.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import certificados.controller.GerenciadorCertificados;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.security.PrivateKey;
-import java.security.PublicKey;
-import salabatepapo.utils.ChaveSimetrica;
-import servercommunication.PacoteCliente;
+import rmi.configs.RMIHelper;
+import rmi.entities.Certificado;
+import rmi.interfaces.ITranfereciaDeChaves;
 import salabatepapo.criptografia.AlgoritimoRSA;
+import salabatepapo.utils.ChaveSimetrica;
 
 /**
  *
  * @author Vitor
  */
 public class ConexaoServidorDeChaves {
-
-    private AlgoritimoRSA criptografiaAssimetrica;
+    
+private AlgoritimoRSA criptografiaAssimetrica;
+    /*
     private DatagramSocket soket;
     private DatagramPacket pacote;
     private final int porta;
@@ -33,9 +34,10 @@ public class ConexaoServidorDeChaves {
     public ConexaoServidorDeChaves(int porta) {
         this.porta = porta;
     }
-
-    public void requestCheveSimetrica(InetAddress enderecoServidorDeNomes,int portaServidorDeNomes) {
+    */
+    public void requestCheveSimetrica() {
         this.criptografiaAssimetrica = new AlgoritimoRSA();
+        /*
         if (this.criptografiaAssimetrica.verificaSeExisteChavesNoSO() == false) {
             this.criptografiaAssimetrica.gerarChaves();
         }
@@ -46,7 +48,7 @@ public class ConexaoServidorDeChaves {
             PublicKey chavePublica = (PublicKey) ois.readObject();
             
             
-            PacoteCliente pacoteCliente = new PacoteCliente(InetAddress.getByName("10.151.34.121"), chavePublica, this.porta);
+            PacoteCliente pacoteCliente = new PacoteCliente(InetAddress.getLocalHost(), chavePublica, this.porta);
             this.soket = new DatagramSocket(this.porta);
             ThreadGetChaveSimetrica tChaveSimetrica = new ThreadGetChaveSimetrica(this.criptografiaAssimetrica, this.soket);
             tChaveSimetrica.start();
@@ -66,10 +68,29 @@ public class ConexaoServidorDeChaves {
                     e.printStackTrace();
                 }
             }
-            this.soket.close();
+            this.soket.close();*/
+        try{
+            System.out.println("Conectando com servidor de chaves...");
+            Registry registro = LocateRegistry.getRegistry(RMIHelper.RMI_SERVER_ADDRESS, RMIHelper.TRANSFERENCIA_DE_CHAVES_PORTA);
+            ITranfereciaDeChaves transferenciaDeChaves = (ITranfereciaDeChaves) registro.lookup(RMIHelper.TRANSFERENCIA_DE_CHAVES_NAME);
+            Certificado certificado = GerenciadorCertificados.getCertificado(RMIHelper.CERTIFICADOS_USUARIO_PATH + "vitor.crt");
+            byte[] chaveSimetricaCriptografada = transferenciaDeChaves.getChaveSimetricaAtravesDeCertificado(certificado);
+            if(chaveSimetricaCriptografada != null){
+                ChaveSimetrica.CHAVE_SIMERICA = (String) this.criptografiaAssimetrica.descriptografar(chaveSimetricaCriptografada, getPrivateKey(RMIHelper.CERTIFICADOS_USUARIO_PATH + "vitor.key"));
+            }else{
+                throw new Exception("Não foi possível obeter a cheve simétrica (Retorno nulo)");
+            }
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private PrivateKey getPrivateKey(String path) throws FileNotFoundException, IOException, ClassNotFoundException{
+        FileInputStream fin = new FileInputStream(path);
+        ObjectInputStream ois = new ObjectInputStream(fin);
+        PrivateKey privateKey = (PrivateKey) ois.readObject();
+        return privateKey;
     }
 
 }

@@ -31,8 +31,8 @@ public class Multicast {
 
     public void run(String endereco) throws Exception {
         int porta = 50023;
-        this.conexaoServidorDeChaves = new ConexaoServidorDeChaves(porta);
-        this.conexaoServidorDeChaves.requestCheveSimetrica(InetAddress.getByName("10.151.34.61"), 50003);///Mudar para os dados do servidor
+        this.conexaoServidorDeChaves = new ConexaoServidorDeChaves();
+        this.conexaoServidorDeChaves.requestCheveSimetrica();///Mudar para os dados do servidor
         enderecoMulticast = InetAddress.getByName(endereco);
         this.socket = new MulticastSocket(porta);
         this.socket.joinGroup(enderecoMulticast);
