@@ -110,6 +110,8 @@ private AlgoritimoRSA criptografiaAssimetrica;
         }
         
         return privateKey;
+        //openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/certificados/usuario/vitor.pem -out /etc/certificados/usuario/vitor.der  -nocrypt > pkcs8_key
+
     }
 
 }
