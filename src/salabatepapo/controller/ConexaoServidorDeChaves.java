@@ -6,13 +6,17 @@
 package salabatepapo.controller;
 
 import certificados.controller.GerenciadorCertificados;
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.KeyFactory;
 import java.security.PrivateKey;
+import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import rmi.configs.RMIHelper;
 import rmi.entities.Certificado;
 import rmi.interfaces.ITranfereciaDeChaves;
@@ -76,7 +80,7 @@ private AlgoritimoRSA criptografiaAssimetrica;
             Certificado certificado = GerenciadorCertificados.getCertificado(RMIHelper.CERTIFICADOS_USUARIO_PATH + "vitor.crt");
             byte[] chaveSimetricaCriptografada = transferenciaDeChaves.getChaveSimetricaAtravesDeCertificado(certificado);
             if(chaveSimetricaCriptografada != null){
-                ChaveSimetrica.CHAVE_SIMERICA = (String) this.criptografiaAssimetrica.descriptografar(chaveSimetricaCriptografada, getPrivateKey(RMIHelper.CERTIFICADOS_USUARIO_PATH + "vitor.key"));
+                ChaveSimetrica.CHAVE_SIMERICA = (String) this.criptografiaAssimetrica.descriptografar(chaveSimetricaCriptografada, getPrivateKey(RMIHelper.CERTIFICADOS_USUARIO_PATH + "vitor.der"));
             }else{
                 throw new Exception("Não foi possível obeter a cheve simétrica (Retorno nulo)");
             }
@@ -87,9 +91,24 @@ private AlgoritimoRSA criptografiaAssimetrica;
     }
     
     private PrivateKey getPrivateKey(String path) throws FileNotFoundException, IOException, ClassNotFoundException{
-        FileInputStream fin = new FileInputStream(path);
-        ObjectInputStream ois = new ObjectInputStream(fin);
-        PrivateKey privateKey = (PrivateKey) ois.readObject();
+        System.out.println(path);
+        PrivateKey privateKey = null;
+        File privateKeyFile = new File(path);
+//        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))){
+//            privateKey = (PrivateKey) ois.readObject();
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
+        try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path))){
+            byte[] privateKeyBytes = new byte[(int)privateKeyFile.length()];
+            bis.read(privateKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            KeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            privateKey = (PrivateKey) keyFactory.generatePrivate(keySpec);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
         return privateKey;
     }
 
